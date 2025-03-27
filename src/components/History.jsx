@@ -6,7 +6,7 @@ const History = ({ history, setInput, clearHistory, setShowHistory }) => {
     return (
         <div className="calculator-container">
             <div className="calculator">
-                <div className="display">History</div>
+                <div className="display">HISTORY</div>
                 <div className="history-list">
                     {history.length > 0 ? (
                         history.map((entry, index) => (
@@ -19,7 +19,7 @@ const History = ({ history, setInput, clearHistory, setShowHistory }) => {
                             </div>
                         ))
                     ) : (
-                        <p className="empty-history">No history available</p>
+                        <p className="empty-history">No records yet..</p>
                     )}
                 </div>
                 <br></br>
