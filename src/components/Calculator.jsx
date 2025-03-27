@@ -9,6 +9,9 @@ const Calculator = () => {
     const [history, setHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
     const [error, setError] = useState(null);
+    const [isRadians, setIsRadians] = useState(true);
+    const [lastTrigFunction, setLastTrigFunction] = useState(null);
+    const [lastTrigValue, setLastTrigValue] = useState(null);
 
     const handleClick = (value) => {
         setError(null);
@@ -18,6 +21,8 @@ const Calculator = () => {
     const handleClear = () => {
         setError(null); 
         setInput("");
+        setLastTrigFunction(null);
+        setLastTrigValue(null);
     };
 
     const handleCalculate = () => {
@@ -48,18 +53,39 @@ const Calculator = () => {
         }
 
         try {
-            const result = handleScientificFunction(func, parseFloat(input));
+            const result = handleScientificFunction(func, parseFloat(input), isRadians);
             if (result === "") {
                 setError("");
                 setInput("");
             } else {
                 setHistory((prev) => [...prev, `${func}(${input}) = ${result}`]);
                 setInput(result);
+                if (["sin", "cos", "tan", "asin", "acos", "atan"].includes(func)) {
+                    setLastTrigFunction(func);
+                    setLastTrigValue(parseFloat(input));
+                } else {
+                    setLastTrigFunction(null);
+                    setLastTrigValue(null);
+                }
             }
         } catch (e) {
             setError("");
             setInput("");
         }
+    };
+
+    const toggleRadiansDegrees = () => {
+        if (!lastTrigFunction || lastTrigValue === null) return;
+
+        const newRadians = !isRadians;
+        setIsRadians(newRadians);
+
+        const convertedValue = newRadians
+            ? (lastTrigValue * Math.PI) / 180
+            : (lastTrigValue * 180) / Math.PI;
+
+        const newResult = handleScientificFunction(lastTrigFunction, convertedValue, newRadians);
+        setInput(newResult);
     };
 
     const clearHistory = () => {
@@ -71,38 +97,41 @@ const Calculator = () => {
             <div className="calculator-container">
                 {!showHistory ? (
                     <div className="calculator">
-                    <div className="display">
-                        {error ? error : input || "0"}
-                    </div>
-                    <div className="buttons">
-                        {["7", "8", "9", "/"].map((btn) => (
-                            <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
-                        ))}
-                        {["4", "5", "6", "*"].map((btn) => (
-                            <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
-                        ))}
-                        {["1", "2", "3", "-"].map((btn) => (
-                            <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
-                        ))}
-                        {["0", ".", "=", "+"].map((btn) => (
-                            <button key={btn} onClick={() => (btn === "=" ? handleCalculate() : handleClick(btn))}>{btn}</button>
-                        ))}
-                        <button className="clear" onClick={handleClear}>C</button>
-                        
-                        {}
-                        {["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "log", "ln", "sqrt", "cbrt", "exp", "pi", "e", "pow", "fact"].map((func) => (
-                            <button key={func} onClick={() => handleSciFunction(func)}>{func}</button>
-                        ))}
-                        
-                        {}
-                        <button className="history-tag" onClick={() => setShowHistory(!showHistory)}>
-                            <FaHistory />
+                        <div className="display">
+                            {error ? error : input || "0"}
+                        </div>
+                        <button 
+                            onClick={toggleRadiansDegrees} 
+                            disabled={!lastTrigFunction} 
+                            style={{ opacity: lastTrigFunction ? 1 : 0.5 }}
+                        >
+                            {isRadians ? "Radians" : "Degrees"}
                         </button>
-                    </div>
-                </div>                
+                        <br></br>
+                        <div className="buttons">
+                            {["7", "8", "9", "/"].map((btn) => (
+                                <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
+                            ))}
+                            {["4", "5", "6", "*"].map((btn) => (
+                                <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
+                            ))}
+                            {["1", "2", "3", "-"].map((btn) => (
+                                <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
+                            ))}
+                            {["0", ".", "=", "+"].map((btn) => (
+                                <button key={btn} onClick={() => (btn === "=" ? handleCalculate() : handleClick(btn))}>{btn}</button>
+                            ))}
+                            <button className="clear" onClick={handleClear}>C</button>
+                            {["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "log", "ln", "sqrt", "cbrt", "exp", "pi", "e", "pow", "fact"].map((func) => (
+                                <button key={func} onClick={() => handleSciFunction(func)}>{func}</button>
+                            ))}
+                            <button className="history-tag" onClick={() => setShowHistory(!showHistory)}>
+                                <FaHistory />
+                            </button>
+                        </div>
+                    </div>                
                 ) : (
                     <History history={history} setInput={setInput} clearHistory={clearHistory} setShowHistory={setShowHistory} />
-
                 )}
             </div>
         </div>
