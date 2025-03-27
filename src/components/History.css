@@ -1,0 +1,88 @@
+.history {
+    width: 400px;
+    min-height: 685px;
+    padding: 20px;
+    background: #222;
+    flex: 1;
+    border-radius: 10px;
+    color: white;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.history h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.history ul {
+    list-style: none;
+    padding: 0;
+    align-items: center;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.history li {
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 1px solid #555;
+    white-space: nowrap;
+    overflow-x: auto;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.history li:hover {
+    background: #444;
+}
+
+.clear-history {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background: rgb(34, 34, 34);
+    color: #00aaff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.clear-history:hover {
+    background: rgb(23, 23, 23);
+}
+
+@media (max-width: 480px) {
+    .history {
+        width: 90%;
+        max-width: 280px;
+        padding: 8px;
+    }
+
+    .history h3 {
+        font-size: 1.2rem;
+    }
+
+    .history ul {
+        max-height: 250px;
+    }
+
+    .history li {
+        padding: 10px;
+        font-size: 1.1rem;
+    }
+
+    .clear-history {
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+}
+
+.history .empty {
+    padding: 10px;
+    color: #bbb;
+    text-align: center;
+}
