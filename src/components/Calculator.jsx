@@ -3,6 +3,8 @@ import "./Calculator.css";
 import { evaluateExpression, handleScientificFunction } from "./CalculatorFunctions";
 import History from "./History";
 import { FaHistory } from "react-icons/fa";
+import { FaBackspace } from "react-icons/fa";
+
 
 const Calculator = () => {
     const [input, setInput] = useState("");
@@ -74,6 +76,10 @@ const Calculator = () => {
         }
     };
 
+    const handleBackspace = () => {
+        setInput((prev) => prev.slice(0, -1));
+    };
+
     const toggleRadiansDegrees = () => {
         if (!lastTrigFunction || lastTrigValue === null) return;
 
@@ -121,13 +127,20 @@ const Calculator = () => {
                             {["0", ".", "=", "+"].map((btn) => (
                                 <button key={btn} onClick={() => (btn === "=" ? handleCalculate() : handleClick(btn))}>{btn}</button>
                             ))}
-                            <button className="clear" onClick={handleClear}>C</button>
+                            <div className="clear-backspace-container">
+                                <button className="clear" onClick={handleClear}>C</button>
+                                <button className="backspace" onClick={handleBackspace}>
+                                    <FaBackspace />
+                                </button>
+                            </div>
                             {["sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "log", "ln", "sqrt", "cbrt", "exp", "pi", "e", "pow", "fact"].map((func) => (
                                 <button key={func} onClick={() => handleSciFunction(func)}>{func}</button>
                             ))}
                             <button className="history-tag" onClick={() => setShowHistory(!showHistory)}>
                                 <FaHistory />
                             </button>
+
+                            
                         </div>
                     </div>                
                 ) : (
