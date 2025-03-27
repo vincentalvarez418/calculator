@@ -143,3 +143,34 @@ button:disabled {
   cursor: not-allowed;
   transform: none !important; 
 }
+
+.clear-backspace-container {
+  display: flex;
+  gap: 6px;
+  grid-column: span 4;
+}
+
+.clear, .backspace {
+  flex: 1;
+  padding: 12px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.backspace {
+  background: rgb(48, 48, 48); 
+  color: #00aaff; 
+  font-size: 1.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.backspace:hover {
+  background: rgb(22, 22, 22); 
+}
+
+.backspace svg {
+  color: #00aaff;
+}
+
