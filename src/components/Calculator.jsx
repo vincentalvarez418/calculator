@@ -52,7 +52,7 @@ const Calculator = () => {
                 setError("Math Error");
                 setInput("");
             } else {
-                setHistory((prev) => [...prev, `${input} = ${result}`]);
+                setHistory((prev) => [...prev, `${input.replace(/([+\-*/])/g, ' $1 ')} = ${result}`]);
                 setInput(result);
             }
         } catch (e) {
