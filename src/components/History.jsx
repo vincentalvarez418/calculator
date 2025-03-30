@@ -10,13 +10,9 @@
                     <div className="history-list">
                         {history.length > 0 ? (
                             history.map((entry, index) => (
-                                <div 
-                                    key={index} 
-                                    className="history-item"
-                                    onClick={() => setInput(entry.split(" = ")[1].trim())}
-                                >
-                                    <span>{entry.split(" = ")[0]}</span> <span className="result">{entry.split(" = ")[1]}</span>
-                                </div>
+                                <div className="history-item" onClick={() => setInput(entry.split(" = ")[1].trim())}>
+                            <span>{entry}</span>
+                        </div>
                             ))
                         ) : (
                             <p className="empty-history">No records yet..</p>
