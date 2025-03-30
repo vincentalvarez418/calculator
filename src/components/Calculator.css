@@ -39,21 +39,32 @@ body{
 .history-list {
   flex-grow: 1;
   overflow-y: auto;
-  min-height: 420px;
+  min-height: 460px;
   padding: 6px;
   background: #333;
   border-radius: 5px;
   color: white;
 }
- 
+
 .history-item {
-  padding: 10px;
-  border-bottom: 1px solid #555;
+  padding: 12px;
+  border-radius: 8px;
+  background: #444;
+  margin-bottom: 6px;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.1s ease-in-out;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
- 
+
 .history-item:hover {
-  background: #444;
+  background: #555;
+  transform: scale(1.02);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.history-item:active {
+  transform: scale(0.98);
 }
  
 .empty-history {
@@ -66,12 +77,6 @@ body{
   margin-top: 10px;
 }
  
-.ghost-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  visibility: hidden;
-}
  
 .history-tag {
   grid-column: span 4;
@@ -144,6 +149,19 @@ button:disabled {
   transform: none !important; 
 }
 
+.equals {
+  grid-column: span 4;
+  background: #0077cc;
+  color: white;
+  font-size: 1.2rem;
+  padding: 12px;
+  text-align: center;
+}
+
+.equals:hover {
+  background: #005fa3;
+}
+
 .clear-backspace-container {
   display: flex;
   gap: 6px;
@@ -158,8 +176,8 @@ button:disabled {
 }
 
 .backspace {
-  background: rgb(48, 48, 48); 
-  color: #00aaff; 
+  background: rgb(48, 48, 48);
+  color: #00aaff;
   font-size: 1.4rem;
   display: flex;
   justify-content: center;
@@ -167,10 +185,13 @@ button:disabled {
 }
 
 .backspace:hover {
-  background: rgb(22, 22, 22); 
+  background: rgb(22, 22, 22);
 }
 
 .backspace svg {
   color: #00aaff;
 }
 
+.result {
+  color: #00aaff;
+}

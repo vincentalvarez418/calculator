@@ -5,7 +5,6 @@ import History from "./History";
 import { FaHistory } from "react-icons/fa";
 import { FaBackspace } from "react-icons/fa";
 
-
 const Calculator = () => {
     const [input, setInput] = useState("");
     const [history, setHistory] = useState([]);
@@ -17,7 +16,15 @@ const Calculator = () => {
 
     const handleClick = (value) => {
         setError(null);
-        setInput((prev) => prev + value);
+    
+        if (value === "%") {
+            setInput((prev) => {
+                if (!prev.trim()) return prev;
+                return prev + "%";
+            });
+        } else {
+            setInput((prev) => prev + value);
+        }
     };
 
     const handleClear = () => {
@@ -29,35 +36,41 @@ const Calculator = () => {
 
     const handleCalculate = () => {
         if (!input.trim()) {
-            setError("");
+            setError("Invalid Input");
             return;
         }
-
+    
         try {
-            const result = evaluateExpression(input);
-            if (result === "") {
-                setError("");
+            let expression = input.replace(/(\d+(\.\d+)?)%/g, (match, num) => {
+                let parts = input.split(/[\+\-\*\/]/);
+                let lastNumber = parseFloat(parts[parts.length - 2] || "1");
+                return `(${num}/100 * ${lastNumber})`;
+            });
+    
+            const result = evaluateExpression(expression);
+            if (isNaN(result)) {
+                setError("Math Error");
                 setInput("");
             } else {
                 setHistory((prev) => [...prev, `${input} = ${result}`]);
                 setInput(result);
             }
         } catch (e) {
-            setError("");
+            setError("Calculation Error");
             setInput("");
         }
     };
 
     const handleSciFunction = (func) => {
         if (!input.trim() || isNaN(parseFloat(input))) {
-            setError("");
+            setError("Invalid Input");
             return;
         }
 
         try {
             const result = handleScientificFunction(func, parseFloat(input), isRadians);
-            if (result === "") {
-                setError("");
+            if (isNaN(result)) {
+                setError("Math Error");
                 setInput("");
             } else {
                 setHistory((prev) => [...prev, `${func}(${input}) = ${result}`]);
@@ -71,7 +84,7 @@ const Calculator = () => {
                 }
             }
         } catch (e) {
-            setError("");
+            setError("Calculation Error");
             setInput("");
         }
     };
@@ -91,7 +104,11 @@ const Calculator = () => {
             : (lastTrigValue * 180) / Math.PI;
 
         const newResult = handleScientificFunction(lastTrigFunction, convertedValue, newRadians);
-        setInput(newResult);
+        if (!isNaN(newResult)) {
+            setInput(newResult);
+        } else {
+            setError("Math Error");
+        }
     };
 
     const clearHistory = () => {
@@ -111,7 +128,7 @@ const Calculator = () => {
                             disabled={!lastTrigFunction} 
                             style={{ opacity: lastTrigFunction ? 1 : 0.5 }}
                         >
-                            {isRadians ? "Radians" : "Degrees"}
+                            {isRadians ? "RAD" : "DEG"}
                         </button>
                         <br></br>
                         <div className="buttons">
@@ -124,9 +141,11 @@ const Calculator = () => {
                             {["1", "2", "3", "-"].map((btn) => (
                                 <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
                             ))}
-                            {["0", ".", "=", "+"].map((btn) => (
-                                <button key={btn} onClick={() => (btn === "=" ? handleCalculate() : handleClick(btn))}>{btn}</button>
+                            {["0", ".", "%", "+"].map((btn) => (
+                                <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
                             ))}
+
+                            <button className="equals" onClick={handleCalculate}>=</button>
                             <div className="clear-backspace-container">
                                 <button className="clear" onClick={handleClear}>C</button>
                                 <button className="backspace" onClick={handleBackspace}>
@@ -139,8 +158,6 @@ const Calculator = () => {
                             <button className="history-tag" onClick={() => setShowHistory(!showHistory)}>
                                 <FaHistory />
                             </button>
-
-                            
                         </div>
                     </div>                
                 ) : (
