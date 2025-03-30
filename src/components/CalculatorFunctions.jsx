@@ -47,41 +47,55 @@ const evaluateTokens = (tokens) => {
     return numStack.pop();
 };
 
-export const handleScientificFunction = (func, value, isRadians = true) => {
+export const handleScientificFunction = (func, value) => {
     try {
-        if (!isRadians && ["sin", "cos", "tan", "asin", "acos", "atan"].includes(func)) {
+        if (["sin", "cos", "tan"].includes(func)) {
             value = (value * Math.PI) / 180;
         }
+        
+        let result;
         switch (func) {
-            case "sin": return Math.sin(value).toString();
-            case "cos": return Math.cos(value).toString();
-            case "tan": return Math.tan(value).toString();
+            case "sin": result = Math.sin(value); break;
+            case "cos": result = Math.cos(value); break;
+            case "tan": result = Math.tan(value); break;
+
             case "asin": 
+                result = Math.asin(value);
+                result = (result * 180) / Math.PI;
+                break;
             case "acos": 
-            case "atan":
-            if (!isRadians) {
-                value = (value * Math.PI) / 180; 
-            }
-            let result = Math[func](value);
-            return isRadians ? result.toString() : (result * 180 / Math.PI).toString(); 
-            case "sinh": return Math.sinh(value).toString();
-            case "cosh": return Math.cosh(value).toString();
-            case "tanh": return Math.tanh(value).toString();
-            case "log": return Math.log10(value).toString();
-            case "ln": return Math.log(value).toString();
-            case "sqrt": return Math.sqrt(value).toString();
-            case "cbrt": return Math.cbrt(value).toString();
-            case "exp": return Math.exp(value).toString();
-            case "pi": return "3.141592653589793";
-            case "e": return "2.718281828459045";
+                result = Math.acos(value);
+                result = (result * 180) / Math.PI;
+                break;
+            case "atan": 
+                result = Math.atan(value);
+                result = (result * 180) / Math.PI;
+                break;
+     
+            case "sinh": result = Math.sinh(value); break;
+            case "cosh": result = Math.cosh(value); break;
+            case "tanh": result = Math.tanh(value); break;
+            case "log": result = Math.log10(value); break;
+            case "ln": result = Math.log(value); break;
+            case "sqrt": result = Math.sqrt(value); break;
+            case "cbrt": result = Math.cbrt(value); break;
+            case "exp": result = Math.exp(value); break;
+            case "pi": return "3.141593";
+            case "e": return "2.718282";
             case "pow": return Math.pow(value[0], value[1]).toString();
             case "fact": return factorial(value).toString();
             default: return "Error";
         }
+
+        return result.toFixed(6);
     } catch {
         return "Error";
     }
 };
+
+
+
+
 
 const factorial = (n) => {
     if (n < 0) return "Error";

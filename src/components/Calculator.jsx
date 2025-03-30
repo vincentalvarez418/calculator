@@ -10,25 +10,17 @@ const Calculator = () => {
     const [history, setHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
     const [error, setError] = useState(null);
-    const [isRadians, setIsRadians] = useState(true);
+    const [isRadians, setIsRadians] = useState(false);
     const [lastTrigFunction, setLastTrigFunction] = useState(null);
     const [lastTrigValue, setLastTrigValue] = useState(null);
 
     const handleClick = (value) => {
         setError(null);
-    
-        if (value === "%") {
-            setInput((prev) => {
-                if (!prev.trim()) return prev;
-                return prev + "%";
-            });
-        } else {
-            setInput((prev) => prev + value);
-        }
+        setInput((prev) => prev + value);
     };
 
     const handleClear = () => {
-        setError(null); 
+        setError(null);
         setInput("");
         setLastTrigFunction(null);
         setLastTrigValue(null);
@@ -42,9 +34,7 @@ const Calculator = () => {
     
         try {
             let expression = input.replace(/(\d+(\.\d+)?)%/g, (match, num) => {
-                let parts = input.split(/[\+\-\*\/]/);
-                let lastNumber = parseFloat(parts[parts.length - 2] || "1");
-                return `(${num}/100 * ${lastNumber})`;
+                return `(${num}/100)`;
             });
     
             const result = evaluateExpression(expression);
@@ -52,7 +42,7 @@ const Calculator = () => {
                 setError("Math Error");
                 setInput("");
             } else {
-                setHistory((prev) => [...prev, `${input.replace(/([+\-*/])/g, ' $1 ')} = ${result}`]);
+                setHistory((prev) => [...prev, `${input} = ${result}`]);
                 setInput(result);
             }
         } catch (e) {
@@ -66,21 +56,22 @@ const Calculator = () => {
             setError("Invalid Input");
             return;
         }
-
+    
+        const inputValue = parseFloat(input);
+        
         try {
-            const result = handleScientificFunction(func, parseFloat(input), isRadians);
+            let result = handleScientificFunction(func, inputValue, isRadians);
+            
             if (isNaN(result)) {
                 setError("Math Error");
                 setInput("");
             } else {
                 setHistory((prev) => [...prev, `${func}(${input}) = ${result}`]);
                 setInput(result);
+                
                 if (["sin", "cos", "tan", "asin", "acos", "atan"].includes(func)) {
                     setLastTrigFunction(func);
-                    setLastTrigValue(parseFloat(input));
-                } else {
-                    setLastTrigFunction(null);
-                    setLastTrigValue(null);
+                    setLastTrigValue(inputValue); 
                 }
             }
         } catch (e) {
@@ -88,27 +79,10 @@ const Calculator = () => {
             setInput("");
         }
     };
+    
 
     const handleBackspace = () => {
         setInput((prev) => prev.slice(0, -1));
-    };
-
-    const toggleRadiansDegrees = () => {
-        if (!lastTrigFunction || lastTrigValue === null) return;
-
-        const newRadians = !isRadians;
-        setIsRadians(newRadians);
-
-        const convertedValue = newRadians
-            ? (lastTrigValue * Math.PI) / 180
-            : (lastTrigValue * 180) / Math.PI;
-
-        const newResult = handleScientificFunction(lastTrigFunction, convertedValue, newRadians);
-        if (!isNaN(newResult)) {
-            setInput(newResult);
-        } else {
-            setError("Math Error");
-        }
     };
 
     const clearHistory = () => {
@@ -123,13 +97,16 @@ const Calculator = () => {
                         <div className="display">
                             {error ? error : input || "0"}
                         </div>
-                        <button 
-                            onClick={toggleRadiansDegrees} 
-                            disabled={!lastTrigFunction} 
-                            style={{ opacity: lastTrigFunction ? 1 : 0.5 }}
-                        >
-                            {isRadians ? "RAD" : "DEG"}
-                        </button>
+                        <div className="rad-deg-box">
+                        <div>
+                            <strong>Rad:</strong> {lastTrigValue !== null ? ((lastTrigValue * Math.PI) / 180).toFixed(6) : "N/A"}
+                        </div>
+                        <div>
+                            <strong>Deg:</strong> {lastTrigValue !== null ? lastTrigValue.toFixed(6) : "N/A"}
+                        </div>
+                    </div>
+
+
                         <br></br>
                         <div className="buttons">
                             {["7", "8", "9", "/"].map((btn) => (
